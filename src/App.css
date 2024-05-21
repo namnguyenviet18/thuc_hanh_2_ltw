@@ -5,4 +5,14 @@
 .main-grid-item {
   height: calc(100vh - 85px);
   padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.user-list {
+  height: 100%;
+  background-color: black;
 }

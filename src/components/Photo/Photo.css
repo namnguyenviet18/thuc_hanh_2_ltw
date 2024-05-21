@@ -1,0 +1,134 @@
+.container-photo {
+    display: flex;
+    max-width: 700px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    flex-direction: column;
+    align-items: start;
+    width: 40%;
+}
+
+.container-photo img {
+    width: 700px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.comment-section {
+    max-width: 700px;
+    margin-top: 20px;
+}
+
+.comment-input-container {
+    width: 700px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+
+
+.comment-input {
+    flex: 1;
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.comment-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment-button:hover {
+    background-color: #0056b3;
+}
+
+.comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment-list-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.container-comment {
+    display: flex;
+    flex-direction: column;
+    max-width: 700px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    border-radius: 10px;
+    color: black;
+    gap: 8px;
+    background-color: #F2F3F5;
+}
+
+.container-comment .name-user {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.time {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.number-comment {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.container-comment .comment-text {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+
+.lead-comment {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.lead-comment img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.time-download {
+    width: 700px;
+    display: flex;
+    margin: 8px 0px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.time-download img {
+    height: 24px;
+    width: 24px;
+}
+
+.icon-text-download {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+}

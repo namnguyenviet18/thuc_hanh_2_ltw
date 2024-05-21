@@ -1,64 +1,93 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./styles.css";
 import { useParams } from "react-router-dom";
-import models from "../../modelData/models";
-import { Link } from "react-router-dom";
-/**
- * Define UserPhotos, a React component of Project 4.
- */
+import Photo from "../Photo/Photo";
+import LoadingPhoto from "./LoadingPhoto";
+
+import { UserContext } from "../../App";
+
 function UserPhotos({ setTypeDisplay }) {
   const { userId } = useParams();
-  const userImages = models.photoOfUserModel(userId);
+  const [photoList, setPhotoList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useContext(UserContext);
+  useEffect(() => {
+    const getPhotosOfUser = async () => {
+      if (!userId) {
+        toast("User not found!");
+        return;
+      }
 
-  function formatTime(dateString) {
-    const date = new Date(dateString);
-    return `${addZero(date.getHours())}h${addZero(date.getMinutes())} 
-    ${addZero(date.getDate())}/${addZero(date.getMonth() + 1)}/${addZero(date.getFullYear())}`
-  }
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://localhost:8080/photos/photoOfUser/${userId}`,
+          {
+            headers: {
+              authorization: localStorage.getItem('token')
+            },
+          }
+        );
+        setIsLoading(false);
 
-  function addZero(aim) {
-    return aim < 10 ? `0${aim}` : aim;
-  }
+        const result = await res.json();
 
-  function imageItem(image) {
-    return (
-      <div>
-        <h2>Create date: {formatTime(image.date_time)}</h2>
-        <div className="image">
-          <img src={require(`../../images/${image.file_name}`)} alt="Ảnh" />
-        </div>
-        <div>
-          {buildComments(image)}
-          <div className="divider"></div>
-        </div>
-      </div>
-    )
-  }
+        if (res.status === 400) {
+          toast(result.message);
+          return;
+        }
 
-  function buildComments(image) {
-    const comments = image.comments;
-    if (!comments || comments.length === 0) {
-      return;
+        setPhotoList(result);
+
+
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getPhotosOfUser();
+
+  }, [userId, toast]);
+
+  const deletePhoto = async (photo_id) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/photos/delete/${photo_id}`,
+        {
+          headers: {
+            authorization: localStorage.getItem('token')
+          },
+        }
+      );
+
+      const result = await res.json();
+
+      console.log("result", result);
+
+      if (res.status === 400) {
+        toast(result.msg);
+        return;
+      }
+
+      if (res.status === 500) {
+        toast("Failed");
+        return;
+      }
+      toast("Delete success");
+      setPhotoList(prev => prev.filter(photo => photo._id !== photo_id));
+
+
+
+    } catch (err) {
+
     }
-    return (
-      <div className="comment-container">
-        {comments.map((comment) => (
-          <div key={comment._id} className="comment-item">
-            <Link
-              to={`/users/${comment.user._id}`}
-              onClick={() => setTypeDisplay("user")}><p className="creator-cmt">{comment.user.first_name} {comment.user.last_name}</p></Link>
-            <p>{formatTime(comment.date_time)}</p>
-            <p>{comment.comment}</p>
-          </div>
-
-        ))}
-      </div>
-    )
   }
 
   return (
     <div>
-      {userImages.map((image) => <div key={image._id}>{imageItem(image)}</div>)}
+      {isLoading && Array(10).fill().map((_, index) => <LoadingPhoto key={index}></LoadingPhoto>)}
+      {(photoList.length === 0 && !isLoading) && <h1>No images</h1>}
+      {photoList.map((item) => (<Photo key={item._id} photo={item} deletePhoto={deletePhoto} />))}
     </div>
   );
 }

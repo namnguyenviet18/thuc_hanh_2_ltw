@@ -1,0 +1,40 @@
+.user-detail-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.user-detail-container div {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.user-detail-container div span {
+    font-weight: bold;
+    font-size: 28px;
+
+}
+
+.user-detail-container div {
+    font-size: 26px;
+}
+
+.user-detail-link {
+    display: inline-block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 20px;
+    text-align: center;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.user-detail-link:hover {
+    background-color: #0056b3;
+}
