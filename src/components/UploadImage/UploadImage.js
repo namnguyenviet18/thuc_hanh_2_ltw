@@ -5,7 +5,7 @@ import { useState, useContext } from 'react';
 import { UserContext } from "../../App";
 
 const UploadImage = () => {
-    const { toast } = useContext(UserContext);
+    const { notify } = useContext(UserContext);
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -33,7 +33,7 @@ const UploadImage = () => {
         event.preventDefault();
 
         if (!image) {
-            toast("Please choose a image");
+            notify("Please choose a image");
             return;
         }
         if (isUploading) {
@@ -60,14 +60,14 @@ const UploadImage = () => {
 
             const result = await res.json();
             if (res.status === 400) {
-                toast(result.msg);
+                notify(result.msg);
                 return;
             }
             if (res.status === 500) {
-                toast('Error uploading photo');
+                notify('Error uploading photo');
             }
             if (res.status === 200) {
-                toast(result.msg);
+                notify(result.msg);
                 setPreview(null);
                 setImage(null);
             }
@@ -75,7 +75,7 @@ const UploadImage = () => {
 
         } catch (err) {
             setIsUploading(false);
-            toast('Error uploading photo');
+            notify('Error uploading photo');
         }
     };
 

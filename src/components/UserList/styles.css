@@ -11,6 +11,11 @@
 
 }
 
+.selected {
+    background-color: #761ec2;
+    color: white;
+}
+
 .user-item:hover {
     background-color: #761ec2;
     color: white;

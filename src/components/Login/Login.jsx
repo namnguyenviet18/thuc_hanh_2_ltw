@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 
 function Login() {
-    const { toast } = useContext(UserContext);
+    const { notify, setIsLogin } = useContext(UserContext);
     const [user, setUser] = useState({
         login_name: "",
         password: ""
@@ -15,10 +15,6 @@ function Login() {
 
     const navigation = useNavigate();
 
-
-    const notify = (msg) => {
-        toast(msg);
-    }
 
 
     const handleLogin = async (event) => {
@@ -43,9 +39,8 @@ function Login() {
                 notify("Đăng nhập thành công");
                 localStorage.setItem('token', result.userToken);
                 localStorage.setItem('user', JSON.stringify(result.other));
-
+                setIsLogin(true);
                 navigation('/', { replace: true });
-
                 setUser({
                     login_name: "",
                     password: ""
@@ -53,7 +48,7 @@ function Login() {
             }
 
         } catch (err) {
-            toast("Mất kết nối tới máy chủ");
+            notify("Mất kết nối tới máy chủ");
         }
 
     }

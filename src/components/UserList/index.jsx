@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../App";
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './styles.css';
 import {
-  Divider,
   List,
   ListItem,
   ListItemText,
@@ -13,9 +11,10 @@ import {
 } from "@mui/material";
 
 
-function UserList({ setTypeDisplay }) {
-  const { setSelectedUser } = useContext(UserContext);
-  const [userList, setUserList] = useState([]);
+function UserList() {
+  const { setViewMode, notify, userList, setUserList, isLogin } = useContext(UserContext);
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [selectedUser, setSelectedUser] = useState(0);
 
   useEffect(() => {
     if (localStorage.getItem('token') === null) {
@@ -36,46 +35,44 @@ function UserList({ setTypeDisplay }) {
         const result = await res.json();
 
         if (!res.ok) {
-          toast(result.msg);
+          notify(result.msg);
           return;
         }
 
+
         if (res.status === 200) {
-          setUserList(result); // Assume the whole result is the user list
+          setUserList([{ _id: user._id, first_name: "My", last_name: "Profile" }, ...result]);
         }
       } catch (err) {
-        toast("Failed to fetch users");
+        notify("Failed to fetch users");
       }
 
     };
 
     fetchUser();
-  }, []); // Add dependency array to run useEffect once
+  }, [isLogin]);
 
-  const handleTypeSelect = () => {
-    setTypeDisplay("user");
-  };
+
 
   return (
     <div>
-      <Typography variant="body1">
+      <Typography style={{ marginLeft: "16px", fontWeight: "bold" }} variant="body1">
         Danh sách người dùng:
       </Typography>
       <List component="nav">
-        {userList && userList.map((item) => (
+
+        {userList && userList.map((item, index) => (
           <div key={item._id}>
             <Link to={`/users/${item._id}`} onClick={() => {
-              handleTypeSelect(); setSelectedUser(item.first_name + " " + item.last_name);
-            }} className="user-item">
+              setViewMode(item.first_name + " " + item.last_name + "'s profile"); setSelectedUser(index);
+            }} className={selectedUser === index ? "user-item selected" : "user-item"}>
               <ListItem>
                 <ListItemText primary={item.first_name + " " + item.last_name} className="user-item-text" />
               </ListItem>
             </Link>
-            {/* <Divider /> */}
           </div>
         ))}
       </List>
-      <ToastContainer />
     </div>
   );
 }

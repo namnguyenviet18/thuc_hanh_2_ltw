@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./styles.css";
 import { useParams, Link } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
-function UserDetail({ setTypeDisplay }) {
+import { UserContext } from "../../App";
+
+function UserDetail() {
   const { userId } = useParams();
+  const { setViewMode } = useContext(UserContext);
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
@@ -14,6 +15,7 @@ function UserDetail({ setTypeDisplay }) {
     occupation: "",
     _id: "",
   });
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,7 +31,6 @@ function UserDetail({ setTypeDisplay }) {
       console.log(result);
 
       if (!res.ok) {
-        toast(result.msg);
         return;
       }
 
@@ -45,8 +46,10 @@ function UserDetail({ setTypeDisplay }) {
       <div><span>Địa chỉ:</span> {user.location}</div>
       <div><span>Giới thiệu:</span> {user.description}</div>
       <div><span>Nghề nghiệp:</span> {user.occupation}</div>
-      <Link to={`/photos/${user._id}`} onClick={() => setTypeDisplay("image")} className="user-detail-link">Xem ảnh</Link>
-      <ToastContainer />
+      <Link to={`/photos/${user._id}`} onClick={
+        () => setViewMode(userId === JSON.parse(localStorage.getItem('user'))._id ?
+          "My photos" : ("Photos of " + user.first_name + user.last_name))
+      } className="user-detail-link">Xem ảnh</Link>
     </div>
   );
 }

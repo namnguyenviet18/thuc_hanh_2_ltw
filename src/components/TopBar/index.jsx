@@ -10,12 +10,14 @@ import gallery from '../../images/gallery.svg';
 /**
  * Define TopBar, a React component of Project 4.
  */
-function TopBar({ typeDisplay }) {
+function TopBar() {
   const navigation = useNavigate();
-  const { setLgr, selectedUser } = useContext(UserContext);
+  const { setIsLogin, isLogin, viewMode, setViewMode, setUserList } = useContext(UserContext);
   function logout() {
-    setLgr(true);
+    setViewMode("");
+    setUserList([]);
     localStorage.removeItem("token");
+    setIsLogin(false);
     navigation("/", { replace: true });
   }
 
@@ -31,13 +33,11 @@ function TopBar({ typeDisplay }) {
 
         <div className="container">
           <Typography>
-            {(typeDisplay != null && typeDisplay === "user") ?
-              `${selectedUser}'s profile` : `Photos of ${selectedUser}`}
+            {!isLogin ? "Please log in to continue" : viewMode}
           </Typography>
 
           {localStorage.getItem('token') &&
             <Link style={{ textDecoration: 'none' }} to={`/uploadImage`} onClick={() => {
-              setLgr(false)
             }}>
               <div className="button"
               >
@@ -47,11 +47,8 @@ function TopBar({ typeDisplay }) {
             </Link>
 
           }
-
-
           {localStorage.getItem('token') == null &&
             <Link style={{ textDecoration: 'none' }} to={`/login`} onClick={() => {
-              setLgr(false)
             }}>
               <div className="button">
                 Login
@@ -66,11 +63,7 @@ function TopBar({ typeDisplay }) {
               LogOut
             </div>
           }
-
-
-
         </div>
-
       </Toolbar>
     </AppBar >
   );

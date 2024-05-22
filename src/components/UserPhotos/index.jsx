@@ -10,11 +10,11 @@ function UserPhotos({ setTypeDisplay }) {
   const { userId } = useParams();
   const [photoList, setPhotoList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useContext(UserContext);
+  const { notify } = useContext(UserContext);
   useEffect(() => {
     const getPhotosOfUser = async () => {
       if (!userId) {
-        toast("User not found!");
+        notify("User not found!");
         return;
       }
 
@@ -33,7 +33,7 @@ function UserPhotos({ setTypeDisplay }) {
         const result = await res.json();
 
         if (res.status === 400) {
-          toast(result.message);
+          notify(result.message);
           return;
         }
 
@@ -41,13 +41,14 @@ function UserPhotos({ setTypeDisplay }) {
 
 
       } catch (err) {
+        setIsLoading(false);
         console.log(err);
       }
     };
 
     getPhotosOfUser();
 
-  }, [userId, toast]);
+  }, [userId, notify]);
 
   const deletePhoto = async (photo_id) => {
     try {
@@ -65,18 +66,16 @@ function UserPhotos({ setTypeDisplay }) {
       console.log("result", result);
 
       if (res.status === 400) {
-        toast(result.msg);
+        notify(result.msg);
         return;
       }
 
       if (res.status === 500) {
-        toast("Failed");
+        notify("Failed");
         return;
       }
-      toast("Delete success");
+      notify(result.msg);
       setPhotoList(prev => prev.filter(photo => photo._id !== photo_id));
-
-
 
     } catch (err) {
 

@@ -7,7 +7,7 @@ import { useContext } from "react";
 import './Register.css';
 function Register() {
 
-    const { toast } = useContext(UserContext);
+    const { notify } = useContext(UserContext);
     const [user, setUser] = useState({
         first_name: "",
         last_name: "",
@@ -24,7 +24,7 @@ function Register() {
     const handleLogin = async (event) => {
         event.preventDefault();
         if (user.password !== cfPassword) {
-            toast("Xác nhận mật khẩu không khớp!");
+            notify("Xác nhận mật khẩu không khớp!");
             return;
         }
         try {
@@ -41,7 +41,7 @@ function Register() {
                 },
             );
             const result = await res.json();
-            toast(result.msg);
+            notify(result.msg);
 
             if (res.status) {
                 setUser({

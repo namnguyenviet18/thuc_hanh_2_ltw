@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import TopBar from "./components/TopBar";
 import UserDetail from "./components/UserDetail";
 import UserList from "./components/UserList";
-import UserPhotos from "./components/UserPhotos";
+import UserPhotos from './components/UserPhotos';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import RecommendLogin from './components/Login/RecomendLogin';
@@ -15,38 +15,40 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 export const UserContext = createContext();
 const App = (props) => {
-  const [selectedUser, setSelectedUser] = useState("");
-  const [typeDisplay, setTypeDisplay] = useState(null);
+  const [viewMode, setViewMode] = useState("");
+  const [isLogin, setIsLogin] = useState(localStorage.getItem('token') !== null);
+  const [userList, setUserList] = useState([]);
 
-  const [lgr, setLgr] = useState(true);
+  const notify = (msg) => {
+    toast(msg);
+  }
   console.log("rerender");
 
   return (
     <Router>
-      <UserContext.Provider value={{ selectedUser, setSelectedUser, setLgr, toast }}>
+      <UserContext.Provider value={{ userList, setUserList, viewMode, setViewMode, notify, setIsLogin, isLogin }}>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TopBar selectedUser={selectedUser} typeDisplay={typeDisplay} />
+              <TopBar />
             </Grid>
             <div className="main-topbar-buffer" />
             <Grid item sm={3}>
               <Paper className="user-list">
-                <UserList setSelectedUser={setSelectedUser} setTypeDisplay={setTypeDisplay} />
+                <UserList />
               </Paper>
             </Grid>
 
             <Grid item sm={9}>
               <Paper className="main-grid-item">
-                {(localStorage.getItem('token') == null && lgr) && <RecommendLogin></RecommendLogin>}
                 <Routes>
                   <Route
                     path="/users/:userId"
-                    element={<UserDetail setTypeDisplay={setTypeDisplay} />}
+                    element={<UserDetail />}
                   />
                   <Route
                     path="/photos/:userId"
-                    element={<UserPhotos setTypeDisplay={setTypeDisplay} />}
+                    element={<UserPhotos />}
                   />
                   <Route
                     path="/login"

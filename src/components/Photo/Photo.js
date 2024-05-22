@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 import iconDelete from '../../images/trash.svg';
 
 function Photo({ photo, deletePhoto }) {
-    const { toast } = useContext(UserContext);
+    const { notify, setViewMode } = useContext(UserContext);
     const [comments, setComments] = useState(photo.comments || []);
     const [commentText, setCommentText] = useState("");
 
     const handleAddComment = async () => {
         if (commentText === "") {
-            toast("Please enter your comment!");
+            notify("Please enter your comment!");
             return;
         }
 
@@ -28,7 +28,7 @@ function Photo({ photo, deletePhoto }) {
             const result = await res.json();
 
             if (res.status === 404 || res.status === 500) {
-                toast(result.msg ?? "Comment submission failed");
+                notify(result.msg ?? "Comment submission failed");
                 return;
             }
 
@@ -44,12 +44,12 @@ function Photo({ photo, deletePhoto }) {
             };
             setComments(prev => [newComment, ...prev]);
             setCommentText("");
-            toast(result.msg ?? "Comment added successfully");
+            notify(result.msg ?? "Comment added successfully");
 
 
         } catch (err) {
             console.error("Error adding comment:", err);
-            toast("Error adding comment");
+            notify("Error adding comment");
         }
     };
 
@@ -67,20 +67,20 @@ function Photo({ photo, deletePhoto }) {
             const result = await res.json();
 
             if (res.status === 404) {
-                toast(result.msg ?? "Error! An error occurred. Please try again later");
+                notify(result.msg ?? "Error! An error occurred. Please try again later");
                 return;
             }
 
             if (res.status === 500) {
-                toast("Error! An error occurred. Please try again later");
+                notify("Error! An error occurred. Please try again later");
                 return;
             }
 
-            toast(result.msg ?? "Deleted successfully");
+            notify(result.msg ?? "Deleted successfully");
             setComments(prev => prev.filter(comment => comment._id !== commentID));
 
         } catch (err) {
-            toast("Error deleting comment");
+            notify("Error deleting comment");
         }
     };
 
@@ -101,7 +101,7 @@ function Photo({ photo, deletePhoto }) {
                 <p className='time'>Posting time: {formatTime(photo.date_time)}</p>
                 <div className='icon-text-download' onClick={() => deletePhoto(photo._id)}><img src={iconDelete} alt='' /> <p>Delete</p></div>
             </div>
-            <p className='number-comment'>{comments.length > 0 ? `comments on this photo (${comments.length})` : "This photo has no comments yet"}</p>
+            <p className='number-comment'>{comments.length > 0 ? `Comments on this photo (${comments.length})` : "This photo has no comments yet"}</p>
 
             <div className="comment-section">
                 <div className="comment-input-container">
@@ -117,7 +117,8 @@ function Photo({ photo, deletePhoto }) {
                 {comments.length > 0 && comments.map((item) =>
                     <div key={item._id} className='container-comment'>
                         <div className='lead-comment'>
-                            <Link style={{ textDecoration: "none" }} to={`/users/${item.user_id._id}`}>
+                            <Link style={{ textDecoration: "none" }} to={`/users/${item.user_id._id}`}
+                                onClick={() => setViewMode(item.user_id.first_name + " " + item.user_id.last_name + "'s profile")}>
                                 <p className='name-user'>{item.user_id.first_name + " " + item.user_id.last_name}</p>
                             </Link>
                             {item.user_id._id === JSON.parse(localStorage.getItem('user'))._id &&
