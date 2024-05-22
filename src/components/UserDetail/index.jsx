@@ -41,11 +41,11 @@ function UserDetail() {
 
   return (
     <div className="user-detail-container">
-      <div><span>Họ và tên:</span> {user.first_name} {user.last_name}</div>
       <div><span>Id:</span> {user._id}</div>
-      <div><span>Địa chỉ:</span> {user.location}</div>
-      <div><span>Giới thiệu:</span> {user.description}</div>
-      <div><span>Nghề nghiệp:</span> {user.occupation}</div>
+      <div><span>Name:</span> {user.first_name} {user.last_name}</div>
+      <div><span>Address:</span> {user.location}</div>
+      <div><span>Introduction:</span> {user.description}</div>
+      <div><span>Occupation:</span> {user.occupation}</div>
       <Link to={`/photos/${user._id}`} onClick={
         () => setViewMode(userId === JSON.parse(localStorage.getItem('user'))._id ?
           "My photos" : ("Photos of " + user.first_name + user.last_name))

@@ -3,11 +3,15 @@ import { useState, useContext } from 'react';
 import { UserContext } from "../../App";
 import { Link } from 'react-router-dom';
 import iconDelete from '../../images/trash.svg';
+import DeleteConfirmation from './DeleteConfirmation';
 
 function Photo({ photo, deletePhoto }) {
     const { notify, setViewMode } = useContext(UserContext);
     const [comments, setComments] = useState(photo.comments || []);
     const [commentText, setCommentText] = useState("");
+    const [showAllComment, setShowAllComment] = useState(false);
+    const [openDialogP, setOpenDialogP] = useState(false);
+    const [openDialogC, setOpenDialogC] = useState(false);
 
     const handleAddComment = async () => {
         if (commentText === "") {
@@ -71,6 +75,12 @@ function Photo({ photo, deletePhoto }) {
                 return;
             }
 
+            if (res.status === 400) {
+                notify(result.msg ?? "Error! An error occurred. Please try again later");
+                return;
+            }
+
+
             if (res.status === 500) {
                 notify("Error! An error occurred. Please try again later");
                 return;
@@ -99,8 +109,11 @@ function Photo({ photo, deletePhoto }) {
             <img src={photo.file_name} alt="" />
             <div className="time-download">
                 <p className='time'>Posting time: {formatTime(photo.date_time)}</p>
-                <div className='icon-text-download' onClick={() => deletePhoto(photo._id)}><img src={iconDelete} alt='' /> <p>Delete</p></div>
+                {photo.user_id === JSON.parse(localStorage.getItem('user'))._id
+                    && <div className='icon-text-download' onClick={() => { setOpenDialogP(true); setOpenDialogC(false) }}>
+                        <img src={iconDelete} alt='' /> <p>Delete</p></div>}
             </div>
+            <DeleteConfirmation onDelete={() => deletePhoto(photo._id)} open={openDialogP} setOpen={setOpenDialogP} type={"photo"} />
             <p className='number-comment'>{comments.length > 0 ? `Comments on this photo (${comments.length})` : "This photo has no comments yet"}</p>
 
             <div className="comment-section">
@@ -114,7 +127,7 @@ function Photo({ photo, deletePhoto }) {
                     />
                     <button className="comment-button" onClick={handleAddComment}>Send</button>
                 </div>
-                {comments.length > 0 && comments.map((item) =>
+                {(showAllComment ? comments : comments.slice(0, 3)).map((item) =>
                     <div key={item._id} className='container-comment'>
                         <div className='lead-comment'>
                             <Link style={{ textDecoration: "none" }} to={`/users/${item.user_id._id}`}
@@ -122,12 +135,16 @@ function Photo({ photo, deletePhoto }) {
                                 <p className='name-user'>{item.user_id.first_name + " " + item.user_id.last_name}</p>
                             </Link>
                             {item.user_id._id === JSON.parse(localStorage.getItem('user'))._id &&
-                                <img alt='' src={iconDelete} onClick={() => deleteComment(item._id)} />}
+                                <img alt='' src={iconDelete} onClick={() => { setOpenDialogC(true); setOpenDialogP(false) }} />}
                         </div>
                         <p className='time'>{formatTime(item.date_time)}</p>
                         <p className='comment-text'>{item.comment}</p>
+                        <DeleteConfirmation onDelete={() => deleteComment(item._id)} open={openDialogC} setOpen={setOpenDialogC} type={"comment"} />
                     </div>
                 )}
+                {comments.length > 3 && <div className='show-comment-controller'
+                    onClick={() => setShowAllComment(!showAllComment)}>
+                    {showAllComment ? "Collapse" : "Show all"}</div>}
             </div>
         </div>
     );

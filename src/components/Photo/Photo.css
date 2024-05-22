@@ -132,3 +132,18 @@
     align-items: center;
     cursor: pointer;
 }
+
+.show-comment-controller {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    align-items: center;
+    color: black;
+    cursor: pointer;
+}
+
+.show-comment-controller:hover {
+    color: #007bff;
+}

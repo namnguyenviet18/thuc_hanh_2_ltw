@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../App";
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  Skeleton
 } from "@mui/material";
 
 
@@ -15,11 +16,15 @@ function UserList() {
   const { setViewMode, notify, userList, setUserList, isLogin } = useContext(UserContext);
   const user = JSON.parse(localStorage.getItem('user'));
   const [selectedUser, setSelectedUser] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem('token') === null) {
       return;
     }
+
+    setIsLoading(true);
 
     const fetchUser = async () => {
       try {
@@ -42,12 +47,16 @@ function UserList() {
 
         if (res.status === 200) {
           setUserList([{ _id: user._id, first_name: "My", last_name: "Profile" }, ...result]);
+          setSelectedUser(0);
+          navigation(`/users/${user._id}`);
         }
       } catch (err) {
         notify("Failed to fetch users");
       }
 
     };
+
+    setIsLoading(false);
 
     fetchUser();
   }, [isLogin]);
@@ -56,11 +65,11 @@ function UserList() {
 
   return (
     <div>
-      <Typography style={{ marginLeft: "16px", fontWeight: "bold" }} variant="body1">
-        Danh sách người dùng:
+      <Typography style={{ marginLeft: "22px", fontWeight: "bold" }} variant="body1">
+        User list:
       </Typography>
+      {isLoading ?? <Skeleton className="loading"></Skeleton>}
       <List component="nav">
-
         {userList && userList.map((item, index) => (
           <div key={item._id}>
             <Link to={`/users/${item._id}`} onClick={() => {
